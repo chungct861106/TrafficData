@@ -10,6 +10,7 @@ fig, ax = plt.subplots()
 place = 'Daan District, Taipei, Taiwan'
 target={'highway':True}
 Alldata = ox.geometries.geometries_from_place(place, tags=target)
+traffic = Alldata.loc[Alldata["highway"] == 'traffic_signals']
 data = Alldata[Alldata['element_type'] == 'way']
 data = data.dropna(subset=['name'])
 
@@ -29,6 +30,11 @@ for i in range(len(road_type)):
 #%%
 check = []
 m = folium.Map(location=[25.0329694, 121.5654177],zoom_start=14)
+for point in  traffic["geometry"]:
+    point = list(point.coords[0])
+    point.reverse()
+    folium.Marker(point , popup="<i>({}, {})</i>".format(point[0], point[1])).add_to(m)
+    
 for kind in road_type:
     try:
         for line in data[data['highway'] == kind]['geometry'].tolist():
@@ -38,8 +44,6 @@ for kind in road_type:
         features[kind].add_to(m)
     except:
         pass
-# for kind in road_type:
-#     folium.Choropleth(data[data['highway'] == kind], line_weight=3, , legend_name=kind).add_to(m)
 folium.LayerControl().add_to(m)
 m.save("ALL.html")
 
