@@ -11,9 +11,7 @@ place = 'Daan District, Taipei, Taiwan'
 target={'highway':True}
 Alldata = ox.geometries.geometries_from_place(place, tags=target)
 traffic = Alldata.loc[Alldata["highway"] == 'traffic_signals']
-data = Alldata[Alldata['element_type'] == 'way']
-data = data.dropna(subset=['name'])
-
+data = Alldata[Alldata['element_type'] == 'way'].dropna(subset=['name'])
 print("Got data")
 road_type = data.highway.unique().tolist()
 road_type.sort(key=lambda x:-len(data[data.highway == x]))
